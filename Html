@@ -1,0 +1,99 @@
+html_content = '''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Server</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .box {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 { color: #e94560; margin-bottom: 10px; }
+        p { color: #a0a0a0; margin-bottom: 30px; }
+        .btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .info {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🎮 Join Roblox Server</h1>
+        <p>Tap the button below to join the exact server instance.</p>
+        <a id="joinBtn" class="btn" href="#">Join Server</a>
+        <div class="info" id="info"></div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const placeId = params.get('placeId');
+        const jobId = params.get('jobId');
+        const gameName = params.get('name') || 'Game';
+
+        if (placeId && jobId) {
+            // Primary: roblox protocol (works if Roblox is installed)
+            const robloxUrl = `roblox://experiences/start?placeId=${placeId}&gameInstanceId=${jobId}`;
+            // Fallback: web URL
+            const webUrl = `https://www.roblox.com/games/${placeId}/${gameName}?gameInstanceId=${jobId}`;
+
+            const btn = document.getElementById('joinBtn');
+            btn.href = robloxUrl;
+            btn.innerText = `Join ${gameName}`;
+
+            // Auto-redirect after 1 second (optional)
+            setTimeout(() => {
+                window.location.href = robloxUrl;
+            }, 1000);
+
+            // If protocol fails after 3s, fallback to web
+            setTimeout(() => {
+                window.location.href = webUrl;
+            }, 4000);
+
+            document.getElementById('info').innerText = `Place: ${placeId} | JobId: ${jobId}`;
+        } else {
+            document.getElementById('joinBtn').style.display = 'none';
+            document.getElementById('info').innerText = 'Missing placeId or jobId in URL';
+        }
+    </script>
+</body>
+</html>'''
+
+with open('/mnt/agents/output/roblox_redirect.html', 'w') as f:
+    f.write(html_content)
+
+print("Saved redirect.html")
+
